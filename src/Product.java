@@ -1,10 +1,10 @@
-abstract class Product {
+abstract class Product implements Comparable<Product> {
     private String productID;
     private String productName;
     private int numAvailableItems;
     private double price;
 
-    public Product(String productID, String productName, double price) {
+    public Product(String productID,int numAvailableItems,String productName, double price) {
         this.productID = productID;
         this.productName = productName;
         this.numAvailableItems = numAvailableItems;
@@ -41,5 +41,20 @@ abstract class Product {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+    public int compareTo(Product product){
+        return this.productID.compareTo(product.productID);
+    }
+    public String toFile(){
+            String details = productID+","+productName+","+numAvailableItems+","+price;
+            return details;
+    }
+    @Override
+    public String toString(){
+        String details = "Product ID                   :"+productID+"\n"+
+                "Product Name                 :"+productName+"\n"+
+                "Number of products available :"+numAvailableItems+"\n"+
+                "Price                        :"+price+"\n";
+        return details;
     }
 }

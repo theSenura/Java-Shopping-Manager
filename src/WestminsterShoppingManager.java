@@ -1,87 +1,147 @@
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 
 public class WestminsterShoppingManager implements ShoppingManager {
 
-    private ArrayList<Product> products = new ArrayList<>();
+    protected ArrayList<Product> productList = new ArrayList<>();
 
+    public ArrayList<Product> getProductList() {
+        return productList;
+    }
 
     @Override
-    public void addProduct(Product product, Scanner scanner) {
-        int category;
+    public void addProduct(Scanner scanner) {
+        int categoryNo;
         int numAvailableItems;
-        if (products.size() >= 50) {
-            System.out.println("Cannot add more than 50 products.");
-            return;
-        }
+        String brand;
+        int warranty;
+        String color;
+        int size;
+
+        if (productList.size() >= 50) {
+            System.out.println("Max product count reached");
+        }else {
 
         System.out.print("Enter product ID: ");
-        int productID = scanner.nextInt();
-        scanner.nextLine();
+        String productID = scanner.next();
+
 
         System.out.print("Enter product name: ");
-        String productName = scanner.nextLine();
+        String productName = scanner.next();
 
         System.out.print("Enter product price: ");
         double price = scanner.nextDouble();
-        scanner.nextLine();
         while (true) {
             try {
                 System.out.print("Enter product category ( enter 1 for electronics, 2 for clothing): ");
-                category = scanner.nextInt();
+                categoryNo = scanner.nextInt();
             }
             catch (Exception e){
-                System.out.println("Error");
+                System.out.println("Invalid input");
                 continue;
             }
-            if (category==1){
-                System.out.print("Enter product category ( enter 1 for electronics, 2 for clothing): ");
+            if (categoryNo==1){
+                System.out.print("Enter the number of available items : ");
                 numAvailableItems = scanner.nextInt();
-                System.out.print("Enter product category ( enter 1 for electronics, 2 for clothing): ");
-                brand = scanner.nextInt();
-                System.out.print("Enter product category ( enter 1 for electronics, 2 for clothing): ");
+                System.out.print("Enter brand : ");
+                brand = scanner.next();
+                System.out.print("Enter warranty period : ");
                 warranty = scanner.nextInt();
-            Electronics electronics = new Electronics(productID, productName, numAvailableItems, price, brand, warranty);
-            products.add(product);
-            System.out.println("Product added successfully.");}
-            else if (category==2) {
-            Clothing clothing = new Electronics(productID, productName, numAvailableItems, price, brand, warranty);
-            products.add(product);
-            System.out.println("Product added successfully.");}
+                Electronics electronics = new Electronics(productID, numAvailableItems,productName, price, brand, warranty);
+                productList.add(electronics);
+                System.out.println("New electronic product added successfully.");
+                break;
+            }
+            else if (categoryNo==2) {
+                System.out.print("Enter the number of available items : ");
+                numAvailableItems = scanner.nextInt();
+                System.out.print("Enter color : ");
+                color = scanner.next();
+                System.out.print("Enter size : ");
+                size = scanner.nextInt();
+                Clothing clothing = new Clothing(productID, productName, numAvailableItems, price,color, size);
+                productList.add(clothing);
+                System.out.println("New clothing product added successfully.");
+                break;
+            }
             else {
+                System.out.println("Invalid input");
 
+                }
             }
         }
     }
     @Override
-    public void deleteProduct(String productID,Scanner scanner) {
+    public void deleteProduct(Scanner scanner) {
         System.out.print("Enter product ID to delete: ");
-        int productId = scanner.nextInt();
+        String productId = scanner.next();
 
-        boolean found = false;
-        for (Product product : products) {
-            if (product.getProductID() == productId) {
-                System.out.println("Product ID " + productId + " (" + product.category + ") deleted.");
-                products.remove(product);
-                found = true;
+        boolean available = false;
+        for (Product product : productList) {
+            if (productId.equals(product.getProductID())) {
+                System.out.println(product.toString());
+                productList.remove(product);
+                available = true;
+                System.out.println("Total number of products left in the system : " + productList.size());
                 break;
             }
         }
 
-        if (!found) {
-            System.out.println("Product not found.");
+        if (!available) {
+            System.out.println("Invalid product ID");
         }
-
-        System.out.println("Total number of products left in the system: " + products.size());
     }
 
     @Override
     public void printProductList() {
+        Collections.sort(productList);
+        for (Product product : productList) {
+            System.out.println(product.toString());
+        }
 
     }
 
     @Override
     public void saveToFile() {
+        FileWriter fileWriter;
+        try {
+            fileWriter = new FileWriter("productList.txt");
+            for (Product product : productList) {
+                fileWriter.write(product.toFile());
+            }
+            fileWriter.close();
+        } catch (Exception e) {
+            System.out.println("Error occurred");
+        }
 
+    }
+    @Override
+    public void readFile() {
+        FileReader fileReader;
+        try {
+            fileReader = new FileReader("productList.txt");
+            Scanner scanner = new Scanner(fileReader);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] values = line.split(",");
+                if (values[6].equals("Electronic")) {
+                    Electronics electronics = new Electronics(values[0], Integer.parseInt(values[2]), values[1], Double.parseDouble(values[3]), values[4], Integer.parseInt(values[5]));
+                    productList.add(electronics);
+                } else if (values[6].equals("Clothing")) {
+                    Clothing clothing = new Clothing(values[0], values[2], Integer.parseInt(values[2]), Double.parseDouble(values[3]), values[4], Integer.parseInt(values[5]));
+                    productList.add(clothing);
+                }
+
+            }
+
+            fileReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
