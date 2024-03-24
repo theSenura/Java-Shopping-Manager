@@ -23,6 +23,11 @@ abstract class Product implements Comparable<Product> {
         return productName;
     }
 
+
+    public String getCategory(){
+        return "Product";
+    }
+
     public int getNumAvailableItems() {
         return numAvailableItems;
     }

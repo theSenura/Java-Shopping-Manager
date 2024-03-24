@@ -3,7 +3,7 @@ public class Electronics extends Product{
     private int warranty;
 
     public Electronics(String productID,int numAvailableItems, String productName, double price, String brand, int warranty) {
-        super(productID,numAvailableItems, productName, price);
+        super(productID,numAvailableItems, productName, price); //Calling the constructor of the product class
         this.brand = brand;
         this.warranty = warranty;
 
@@ -15,6 +15,9 @@ public class Electronics extends Product{
 
     public int getWarranty() {
         return warranty;
+    }
+    public String getCategory(){
+        return "Electronic";
     }
 
 
@@ -36,7 +39,8 @@ public class Electronics extends Product{
         String details = super.toString()+
                 "Brand                        :"+brand+"\n"+
                 "Warranty                     :"+warranty+"\n"+
-                "Category                     : Electronic";
+                "Category                     : Electronic"+ "\n"+
+                "------------------------------------------";
         return details;
     }
 }

@@ -2,8 +2,8 @@ public class Clothing extends Product{
     private String color;
     private int size;
 
-    public Clothing(String productID, String productName, int numAvailableItems, double price, String color, int size) {
-        super(productID, numAvailableItems,productName, price);
+    public Clothing(String productID, int numAvailableItems, String productName, double price, String color, int size) {
+        super(productID, numAvailableItems,productName, price); //Calling the constructor of the product class
         this.color = color;
         this.size = size;
     }
@@ -16,7 +16,10 @@ public class Clothing extends Product{
         return size;
     }
 
-
+    @Override
+    public String getCategory(){
+            return "Clothing";
+        }
 
     public void setColor(String color) {
         this.color = color;
@@ -30,10 +33,11 @@ public class Clothing extends Product{
         return details;
     }
     public String toString(){
-        String details = super.toString()+"\n"+
-                "Color :"+color+"\n"+
-                "Size :"+size+"\n"+
-                "Category : Clothing";
+        String details = super.toString()+
+                "Color                        :"+color+"\n"+
+                "Size                        :"+size+"\n"+
+                "Category                     : Clothing"+ "\n"+
+                "------------------------------------------";
         return details;
     }
 }
